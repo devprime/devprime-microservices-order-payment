@@ -1,5 +1,4 @@
-# microservices-order-payment
-Asynchronous Microservices Communication with devprime (Order / Payment)   
+# Asynchronous Microservices Communication with devprime (Order / Payment)   
 
 
 More details (https://docs.devprime.io/how-to/asynchronous-microservices-communication/)
