@@ -4,7 +4,7 @@ We will create two microservices using asynchronous communication. When you requ
 
 
 1) Install and activate the Devprime CLI
-2) Run 'git clone https://github.com/devprime/devprime-microservices-order-payment.git"
+2) Run git clone https://github.com/devprime/devprime-microservices-order-payment.git
 3) Enter the folder
 4) Run "dp stack" to update the projects and include the Devprime License
 
