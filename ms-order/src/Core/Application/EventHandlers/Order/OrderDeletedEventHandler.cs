@@ -4,7 +4,6 @@ public class OrderDeletedEventHandler : EventHandler<OrderDeleted, IOrderState>
     public OrderDeletedEventHandler(IOrderState state, IDp dp) : base(state, dp)
     {
     }
-
     public override dynamic Handle(OrderDeleted orderDeleted)
     {
         var success = false;

@@ -12,7 +12,6 @@ public class PaymentDeletedEventHandlerTest
         return new PaymentDeletedEventDTO()
         {ID = payment.ID, CustomerName = payment.CustomerName, OrderID = payment.OrderID, Value = payment.Value};
     }
-
     public PaymentDeleted Create_Payment_Object_OK()
     {
         var payment = PaymentTest.Create_Payment_Required_Properties_OK();
@@ -23,7 +22,6 @@ public class PaymentDeletedEventHandlerTest
     [Fact]
     [Trait("EventHandler", "PaymentDeletedEventHandler")]
     [Trait("EventHandler", "Success")]
-
     public void Handle_PaymentObjectFilled_Success()
     {
         //Arrange

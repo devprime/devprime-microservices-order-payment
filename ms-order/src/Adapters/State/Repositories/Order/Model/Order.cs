@@ -3,10 +3,8 @@ public class Order
 {
     [BsonId]
     [BsonElement("_id")]
-
-    public ObjectId Id { get; set; }
+    public ObjectId _Id { get; set; }
     [BsonRepresentation(BsonType.String)]
-
     public Guid ID { get; set; }
     public string CustomerName { get; set; }
     public string CustomerTaxID { get; set; }

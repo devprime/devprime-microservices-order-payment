@@ -11,11 +11,9 @@ public class Payment : AggRoot
         OrderID = orderID;
         Value = value;
     }
-
     public Payment()
     {
     }
-
     public virtual void Add()
     {
         Dp.Pipeline(Execute: () =>
@@ -30,7 +28,6 @@ public class Payment : AggRoot
             }
         });
     }
-
     public virtual void Update()
     {
         Dp.Pipeline(Execute: () =>
@@ -45,7 +42,6 @@ public class Payment : AggRoot
             }
         });
     }
-
     public virtual void Delete()
     {
         Dp.Pipeline(Execute: () =>
@@ -60,7 +56,6 @@ public class Payment : AggRoot
             }
         });
     }
-
     public virtual (List<Payment> Result, long Total) Get(int? limit, int? offset, string ordering, string sort, string filter)
     {
         return Dp.Pipeline(ExecuteResult: () =>

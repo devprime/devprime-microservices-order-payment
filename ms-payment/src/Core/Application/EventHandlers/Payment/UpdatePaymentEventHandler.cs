@@ -4,7 +4,6 @@ public class UpdatePaymentEventHandler : EventHandler<UpdatePayment, IPaymentSta
     public UpdatePaymentEventHandler(IPaymentState state, IDp dp) : base(state, dp)
     {
     }
-
     public override dynamic Handle(UpdatePayment updatePayment)
     {
         var payment = updatePayment.Get<Domain.Aggregates.Payment.Payment>();

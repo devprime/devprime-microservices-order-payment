@@ -12,7 +12,6 @@ public class OrderUpdatedEventHandlerTest
         return new OrderUpdatedEventDTO()
         {ID = order.ID, CustomerName = order.CustomerName, CustomerTaxID = order.CustomerTaxID, Total = order.Total};
     }
-
     public OrderUpdated Create_Order_Object_OK()
     {
         var order = OrderTest.Create_Order_Required_Properties_OK();
@@ -23,7 +22,6 @@ public class OrderUpdatedEventHandlerTest
     [Fact]
     [Trait("EventHandler", "OrderUpdatedEventHandler")]
     [Trait("EventHandler", "Success")]
-
     public void Handle_OrderObjectFilled_Success()
     {
         //Arrange

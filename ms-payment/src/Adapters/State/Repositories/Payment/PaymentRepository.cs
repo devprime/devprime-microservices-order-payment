@@ -7,44 +7,49 @@ public class PaymentRepository : RepositoryBase, IPaymentRepository
     }
 
 #region Write
-
     public bool Add(Domain.Aggregates.Payment.Payment payment)
     {
-        return Dp.Pipeline(ExecuteResult: (stateContext) =>
+        var result = Dp.Pipeline(ExecuteResult: (stateContext) =>
         {
             var state = new ConnectionMongo(stateContext, Dp);
             var _payment = ToState(payment);
             state.Payment.InsertOne(_payment);
             return true;
         });
+        if (result is null)
+            return false;
+        return result;
     }
-
     public bool Delete(Guid paymentID)
     {
-        return Dp.Pipeline(ExecuteResult: (stateContext) =>
+        var result = Dp.Pipeline(ExecuteResult: (stateContext) =>
         {
             var state = new ConnectionMongo(stateContext, Dp);
             state.Payment.DeleteOne(p => p.ID == paymentID);
             return true;
         });
+        if (result is null)
+            return false;
+        return result;
     }
-
     public bool Update(Domain.Aggregates.Payment.Payment payment)
     {
-        return Dp.Pipeline(ExecuteResult: (stateContext) =>
+        var result = Dp.Pipeline(ExecuteResult: (stateContext) =>
         {
             var state = new ConnectionMongo(stateContext, Dp);
             var _payment = ToState(payment);
-            _payment.Id = state.Payment.Find(p => p.ID == payment.ID).FirstOrDefault().Id;
+            _payment._Id = state.Payment.Find(p => p.ID == payment.ID).FirstOrDefault()._Id;
             state.Payment.ReplaceOne(p => p.ID == payment.ID, _payment);
             return true;
         });
+        if (result is null)
+            return false;
+        return result;
     }
 
 #endregion Write
 
 #region Read
-
     public Domain.Aggregates.Payment.Payment Get(Guid paymentID)
     {
         return Dp.Pipeline(ExecuteResult: (stateContext) =>
@@ -55,7 +60,6 @@ public class PaymentRepository : RepositoryBase, IPaymentRepository
             return _payment;
         });
     }
-
     public List<Domain.Aggregates.Payment.Payment> GetAll(int? limit, int? offset, string ordering, string sort, string filter)
     {
         return Dp.Pipeline(ExecuteResult: (stateContext) =>
@@ -135,17 +139,18 @@ public class PaymentRepository : RepositoryBase, IPaymentRepository
         }
         return exp;
     }
-
     public bool Exists(Guid paymentID)
     {
-        return Dp.Pipeline(ExecuteResult: (stateContext) =>
+        var result = Dp.Pipeline(ExecuteResult: (stateContext) =>
         {
             var state = new ConnectionMongo(stateContext, Dp);
             var payment = state.Payment.Find(x => x.ID == paymentID).Project<Model.Payment>("{ ID: 1 }").FirstOrDefault();
             return (paymentID == payment?.ID);
         });
+        if (result is null)
+            return false;
+        return result;
     }
-
     public long Total(string filter)
     {
         return Dp.Pipeline(ExecuteResult: (stateContext) =>
@@ -159,7 +164,6 @@ public class PaymentRepository : RepositoryBase, IPaymentRepository
 #endregion Read
 
 #region mappers
-
     public static DevPrime.State.Repositories.Payment.Model.Payment ToState(Domain.Aggregates.Payment.Payment payment)
     {
         if (payment is null)
@@ -171,7 +175,6 @@ public class PaymentRepository : RepositoryBase, IPaymentRepository
         _payment.Value = payment.Value;
         return _payment;
     }
-
     public static Domain.Aggregates.Payment.Payment ToDomain(DevPrime.State.Repositories.Payment.Model.Payment payment)
     {
         if (payment is null)
@@ -180,7 +183,6 @@ public class PaymentRepository : RepositoryBase, IPaymentRepository
         Domain.Aggregates.Payment.Payment _payment = new Domain.Aggregates.Payment.Payment(payment.ID, payment.CustomerName, payment.OrderID, payment.Value);
         return _payment;
     }
-
     public static List<Domain.Aggregates.Payment.Payment> ToDomain(IList<DevPrime.State.Repositories.Payment.Model.Payment> paymentList)
     {
         List<Domain.Aggregates.Payment.Payment> _paymentList = new List<Domain.Aggregates.Payment.Payment>();

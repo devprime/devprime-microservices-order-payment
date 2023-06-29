@@ -4,7 +4,6 @@ public class OrderCreatedEventHandler : EventHandler<OrderCreated, IOrderState>
     public OrderCreatedEventHandler(IOrderState state, IDp dp) : base(state, dp)
     {
     }
-
     public override dynamic Handle(OrderCreated orderCreated)
     {
         var success = false;

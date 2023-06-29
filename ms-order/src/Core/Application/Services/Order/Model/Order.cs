@@ -14,7 +14,6 @@ public class Order
         Filter = filter;
         Sort = sort;
     }
-
     public Guid ID { get; set; }
     public string CustomerName { get; set; }
     public string CustomerTaxID { get; set; }
@@ -25,35 +24,29 @@ public class Order
         var _orderList = ToApplication(orderList);
         return new PagingResult<IList<Order>>(_orderList, total, offSet, limit);
     }
-
     public virtual Order ToOrder(Domain.Aggregates.Order.Order order)
     {
         var _order = ToApplication(order);
         return _order;
     }
-
     public virtual Domain.Aggregates.Order.Order ToDomain()
     {
         var _order = ToDomain(this);
         return _order;
     }
-
     public virtual Domain.Aggregates.Order.Order ToDomain(Guid id)
     {
         var _order = new Domain.Aggregates.Order.Order();
         _order.ID = id;
         return _order;
     }
-
     public Order()
     {
     }
-
     public Order(Guid id)
     {
         ID = id;
     }
-
     public static Application.Services.Order.Model.Order ToApplication(Domain.Aggregates.Order.Order order)
     {
         if (order is null)
@@ -66,7 +59,6 @@ public class Order
         _order.Total = order.Total;
         return _order;
     }
-
     public static List<Application.Services.Order.Model.Order> ToApplication(IList<Domain.Aggregates.Order.Order> orderList)
     {
         List<Application.Services.Order.Model.Order> _orderList = new List<Application.Services.Order.Model.Order>();
@@ -85,7 +77,6 @@ public class Order
         }
         return _orderList;
     }
-
     public static Domain.Aggregates.Order.Order ToDomain(Application.Services.Order.Model.Order order)
     {
         if (order is null)
@@ -93,7 +84,6 @@ public class Order
         Domain.Aggregates.Order.Order _order = new Domain.Aggregates.Order.Order(order.ID, order.CustomerName, order.CustomerTaxID, Application.Services.Order.Model.Item.ToDomain(order.Items), order.Total);
         return _order;
     }
-
     public static List<Domain.Aggregates.Order.Order> ToDomain(IList<Application.Services.Order.Model.Order> orderList)
     {
         List<Domain.Aggregates.Order.Order> _orderList = new List<Domain.Aggregates.Order.Order>();

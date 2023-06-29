@@ -7,44 +7,49 @@ public class OrderRepository : RepositoryBase, IOrderRepository
     }
 
 #region Write
-
     public bool Add(Domain.Aggregates.Order.Order order)
     {
-        return Dp.Pipeline(ExecuteResult: (stateContext) =>
+        var result = Dp.Pipeline(ExecuteResult: (stateContext) =>
         {
             var state = new ConnectionMongo(stateContext, Dp);
             var _order = ToState(order);
             state.Order.InsertOne(_order);
             return true;
         });
+        if (result is null)
+            return false;
+        return result;
     }
-
     public bool Delete(Guid orderID)
     {
-        return Dp.Pipeline(ExecuteResult: (stateContext) =>
+        var result = Dp.Pipeline(ExecuteResult: (stateContext) =>
         {
             var state = new ConnectionMongo(stateContext, Dp);
             state.Order.DeleteOne(p => p.ID == orderID);
             return true;
         });
+        if (result is null)
+            return false;
+        return result;
     }
-
     public bool Update(Domain.Aggregates.Order.Order order)
     {
-        return Dp.Pipeline(ExecuteResult: (stateContext) =>
+        var result = Dp.Pipeline(ExecuteResult: (stateContext) =>
         {
             var state = new ConnectionMongo(stateContext, Dp);
             var _order = ToState(order);
-            _order.Id = state.Order.Find(p => p.ID == order.ID).FirstOrDefault().Id;
+            _order._Id = state.Order.Find(p => p.ID == order.ID).FirstOrDefault()._Id;
             state.Order.ReplaceOne(p => p.ID == order.ID, _order);
             return true;
         });
+        if (result is null)
+            return false;
+        return result;
     }
 
 #endregion Write
 
 #region Read
-
     public Domain.Aggregates.Order.Order Get(Guid orderID)
     {
         return Dp.Pipeline(ExecuteResult: (stateContext) =>
@@ -55,7 +60,6 @@ public class OrderRepository : RepositoryBase, IOrderRepository
             return _order;
         });
     }
-
     public List<Domain.Aggregates.Order.Order> GetAll(int? limit, int? offset, string ordering, string sort, string filter)
     {
         return Dp.Pipeline(ExecuteResult: (stateContext) =>
@@ -135,17 +139,18 @@ public class OrderRepository : RepositoryBase, IOrderRepository
         }
         return exp;
     }
-
     public bool Exists(Guid orderID)
     {
-        return Dp.Pipeline(ExecuteResult: (stateContext) =>
+        var result = Dp.Pipeline(ExecuteResult: (stateContext) =>
         {
             var state = new ConnectionMongo(stateContext, Dp);
             var order = state.Order.Find(x => x.ID == orderID).Project<Model.Order>("{ ID: 1 }").FirstOrDefault();
             return (orderID == order?.ID);
         });
+        if (result is null)
+            return false;
+        return result;
     }
-
     public long Total(string filter)
     {
         return Dp.Pipeline(ExecuteResult: (stateContext) =>
@@ -159,7 +164,6 @@ public class OrderRepository : RepositoryBase, IOrderRepository
 #endregion Read
 
 #region mappers
-
     public static DevPrime.State.Repositories.Order.Model.Order ToState(Domain.Aggregates.Order.Order order)
     {
         if (order is null)
@@ -172,7 +176,6 @@ public class OrderRepository : RepositoryBase, IOrderRepository
         _order.Total = order.Total;
         return _order;
     }
-
     public static DevPrime.State.Repositories.Order.Model.Item ToState(Domain.Aggregates.Order.Item item)
     {
         if (item is null)
@@ -185,7 +188,6 @@ public class OrderRepository : RepositoryBase, IOrderRepository
         _item.Price = item.Price;
         return _item;
     }
-
     public static List<DevPrime.State.Repositories.Order.Model.Item> ToState(IList<Domain.Aggregates.Order.Item> itemList)
     {
         List<DevPrime.State.Repositories.Order.Model.Item> _itemList = new List<DevPrime.State.Repositories.Order.Model.Item>();
@@ -204,7 +206,6 @@ public class OrderRepository : RepositoryBase, IOrderRepository
         }
         return _itemList;
     }
-
     public static Domain.Aggregates.Order.Order ToDomain(DevPrime.State.Repositories.Order.Model.Order order)
     {
         if (order is null)
@@ -213,7 +214,6 @@ public class OrderRepository : RepositoryBase, IOrderRepository
         Domain.Aggregates.Order.Order _order = new Domain.Aggregates.Order.Order(order.ID, order.CustomerName, order.CustomerTaxID, ToDomain(order.Items), order.Total);
         return _order;
     }
-
     public static Domain.Aggregates.Order.Item ToDomain(DevPrime.State.Repositories.Order.Model.Item item)
     {
         if (item is null)
@@ -222,7 +222,6 @@ public class OrderRepository : RepositoryBase, IOrderRepository
         Domain.Aggregates.Order.Item _item = new Domain.Aggregates.Order.Item(item.ID, item.Description, item.Amount, item.SKU, item.Price);
         return _item;
     }
-
     public static List<Domain.Aggregates.Order.Item> ToDomain(IList<DevPrime.State.Repositories.Order.Model.Item> itemList)
     {
         List<Domain.Aggregates.Order.Item> _itemList = new List<Domain.Aggregates.Order.Item>();
@@ -236,7 +235,6 @@ public class OrderRepository : RepositoryBase, IOrderRepository
         }
         return _itemList;
     }
-
     public static List<Domain.Aggregates.Order.Order> ToDomain(IList<DevPrime.State.Repositories.Order.Model.Order> orderList)
     {
         List<Domain.Aggregates.Order.Order> _orderList = new List<Domain.Aggregates.Order.Order>();

@@ -12,7 +12,6 @@ public class OrderCreatedEventHandlerTest
         return new OrderCreatedEventDTO()
         {ID = order.ID, CustomerName = order.CustomerName, CustomerTaxID = order.CustomerTaxID, Total = order.Total};
     }
-
     public OrderCreated Create_Order_Object_OK()
     {
         var order = OrderTest.Create_Order_Required_Properties_OK();
@@ -23,7 +22,6 @@ public class OrderCreatedEventHandlerTest
     [Fact]
     [Trait("EventHandler", "OrderCreatedEventHandler")]
     [Trait("EventHandler", "Success")]
-
     public void Handle_OrderObjectFilled_Success()
     {
         //Arrange

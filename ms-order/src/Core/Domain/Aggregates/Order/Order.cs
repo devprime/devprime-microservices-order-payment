@@ -16,7 +16,6 @@ public class Order : AggRoot
                 Items.Add(item);
         }
     }
-
     public Order(Guid id, string customerName, string customerTaxID, IEnumerable<Domain.Aggregates.Order.Item> items, double total)
     {
         ID = id;
@@ -25,11 +24,9 @@ public class Order : AggRoot
         Items = items?.ToList();
         Total = total;
     }
-
     public Order()
     {
     }
-
     public virtual void Add()
     {
         Dp.Pipeline(Execute: () =>
@@ -45,7 +42,6 @@ public class Order : AggRoot
             }
         });
     }
-
     public virtual void Update()
     {
         Dp.Pipeline(Execute: () =>
@@ -61,7 +57,6 @@ public class Order : AggRoot
             }
         });
     }
-
     public virtual void Delete()
     {
         Dp.Pipeline(Execute: () =>
@@ -76,7 +71,6 @@ public class Order : AggRoot
             }
         });
     }
-
     public virtual (List<Order> Result, long Total) Get(int? limit, int? offset, string ordering, string sort, string filter)
     {
         return Dp.Pipeline(ExecuteResult: () =>

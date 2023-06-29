@@ -11,7 +11,6 @@ public class DeletePaymentEventHandlerTest
     [Fact]
     [Trait("EventHandler", "DeletePaymentEventHandler")]
     [Trait("EventHandler", "Success")]
-
     public void Handle_PaymentObjectFilled_Success()
     {
         //Arrange

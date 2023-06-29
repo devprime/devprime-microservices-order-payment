@@ -16,7 +16,6 @@ public class Order
         _order.Total = order.Total;
         return _order;
     }
-
     public static List<Application.Services.Order.Model.Order> ToApplication(IList<DevPrime.Web.Models.Order.Order> orderList)
     {
         List<Application.Services.Order.Model.Order> _orderList = new List<Application.Services.Order.Model.Order>();
@@ -34,7 +33,6 @@ public class Order
         }
         return _orderList;
     }
-
     public virtual Application.Services.Order.Model.Order ToApplication()
     {
         var model = ToApplication(this);

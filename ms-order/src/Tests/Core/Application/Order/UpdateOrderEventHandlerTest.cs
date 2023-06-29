@@ -11,7 +11,6 @@ public class UpdateOrderEventHandlerTest
     [Fact]
     [Trait("EventHandler", "UpdateOrderEventHandler")]
     [Trait("EventHandler", "Success")]
-
     public void Handle_OrderObjectFilled_Success()
     {
         //Arrange

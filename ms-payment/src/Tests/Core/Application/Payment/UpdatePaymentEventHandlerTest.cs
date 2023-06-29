@@ -11,7 +11,6 @@ public class UpdatePaymentEventHandlerTest
     [Fact]
     [Trait("EventHandler", "UpdatePaymentEventHandler")]
     [Trait("EventHandler", "Success")]
-
     public void Handle_PaymentObjectFilled_Success()
     {
         //Arrange

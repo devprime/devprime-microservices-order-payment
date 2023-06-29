@@ -4,7 +4,6 @@ public class PaymentCreatedEventHandler : EventHandler<PaymentCreated, IPaymentS
     public PaymentCreatedEventHandler(IPaymentState state, IDp dp) : base(state, dp)
     {
     }
-
     public override dynamic Handle(PaymentCreated paymentCreated)
     {
         var success = false;

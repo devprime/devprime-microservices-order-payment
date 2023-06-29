@@ -4,7 +4,6 @@ public class PaymentDeletedEventHandler : EventHandler<PaymentDeleted, IPaymentS
     public PaymentDeletedEventHandler(IPaymentState state, IDp dp) : base(state, dp)
     {
     }
-
     public override dynamic Handle(PaymentDeleted paymentDeleted)
     {
         var success = false;

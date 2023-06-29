@@ -16,7 +16,6 @@ public class OrderServiceTest
         var applicationOrder = applicationOrderMock.Object;
         return applicationOrder;
     }
-
     public IOrderService SetupApplicationService()
     {
         var state = new Mock<IOrderState>().Object;
@@ -26,7 +25,6 @@ public class OrderServiceTest
     [Fact]
     [Trait("ApplicationService", "OrderService")]
     [Trait("ApplicationService", "Success")]
-
     public void Add_CommandNotNull_Success()
     {
         //Arrange
@@ -49,7 +47,6 @@ public class OrderServiceTest
     [Fact]
     [Trait("ApplicationService", "OrderService")]
     [Trait("ApplicationService", "Success")]
-
     public void Update_CommandFilled_Success()
     {
         //Arrange
@@ -72,7 +69,6 @@ public class OrderServiceTest
     [Fact]
     [Trait("ApplicationService", "OrderService")]
     [Trait("ApplicationService", "Success")]
-
     public void Delete_CommandFilled_Success()
     {
         //Arrange

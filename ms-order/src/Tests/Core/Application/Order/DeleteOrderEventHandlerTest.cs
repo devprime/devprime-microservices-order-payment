@@ -11,7 +11,6 @@ public class DeleteOrderEventHandlerTest
     [Fact]
     [Trait("EventHandler", "DeleteOrderEventHandler")]
     [Trait("EventHandler", "Success")]
-
     public void Handle_OrderObjectFilled_Success()
     {
         //Arrange

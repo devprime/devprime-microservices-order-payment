@@ -12,7 +12,6 @@ public class PaymentCreatedEventHandlerTest
         return new PaymentCreatedEventDTO()
         {ID = payment.ID, CustomerName = payment.CustomerName, OrderID = payment.OrderID, Value = payment.Value};
     }
-
     public PaymentCreated Create_Payment_Object_OK()
     {
         var payment = PaymentTest.Create_Payment_Required_Properties_OK();
@@ -23,7 +22,6 @@ public class PaymentCreatedEventHandlerTest
     [Fact]
     [Trait("EventHandler", "PaymentCreatedEventHandler")]
     [Trait("EventHandler", "Success")]
-
     public void Handle_PaymentObjectFilled_Success()
     {
         //Arrange

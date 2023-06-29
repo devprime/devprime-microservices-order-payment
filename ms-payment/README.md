@@ -1,3 +1,6 @@
+https://github.com/dotnet/dotnet-docker
+https://hub.docker.com/_/microsoft-dotnet-sdk/
+https://hub.docker.com/_/microsoft-dotnet-aspnet/
 # Introduction 
 TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
 

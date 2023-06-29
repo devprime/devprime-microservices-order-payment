@@ -10,6 +10,6 @@
 		<NoWarn>1701;1702;NU1608</NoWarn>
 	</PropertyGroup>
 	<ItemGroup>
-    <PackageReference Include="devprime.stack.observability" Version="7.0.6" />
+    <PackageReference Include="devprime.stack.observability" Version="7.0.31" />
 	</ItemGroup>
 </Project>

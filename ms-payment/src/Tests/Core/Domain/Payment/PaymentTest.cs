@@ -1,31 +1,24 @@
 namespace Core.Tests;
 public class PaymentTest
 {
-    public static Guid FixedID = new Guid("99afa025-4e6d-4847-88e0-8293cda8dd0b");
-
-    public static Guid IDFixedID = new Guid("b4d6ad71-1ea8-4e2f-b8c1-434a6dce431b");
-
-    public static Guid OrderIDFixedID = new Guid("65f26c75-ad77-4555-b530-4fed91a5bc04");
+    public static Guid FixedID = new Guid("565139ce-2041-4e02-8001-e6688e987f61");
+    public static Guid OrderIDFixedID = new Guid("f085a957-3a2f-4c6d-b023-c2202d01f713");
 
 #region fixtures
-
     public static Domain.Aggregates.Payment.Payment Create_Payment_Required_Properties_OK()
     {
         var payment = new Domain.Aggregates.Payment.Payment();
         DpTest.MockDpDomain(payment);
         DpTest.Set<Guid>(payment, "ID", FixedID);
-        DpTest.Set<Guid>(payment, "ID", IDFixedID);
         DpTest.Set<string>(payment, "CustomerName", Faker.Lorem.Sentence(1));
         DpTest.Set<Guid>(payment, "OrderID", OrderIDFixedID);
         return payment;
     }
-
     public static Domain.Aggregates.Payment.Payment Create_Payment_With_CustomerName_Required_Property_Missing()
     {
         var payment = new Domain.Aggregates.Payment.Payment();
         DpTest.MockDpDomain(payment);
         DpTest.Set<Guid>(payment, "ID", FixedID);
-        DpTest.Set<Guid>(payment, "ID", IDFixedID);
         DpTest.Set<Guid>(payment, "OrderID", OrderIDFixedID);
         return payment;
     }
@@ -36,7 +29,6 @@ public class PaymentTest
     [Fact]
     [Trait("Aggregate", "Add")]
     [Trait("Aggregate", "Success")]
-
     public void Add_Required_properties_filled_Success()
     {
         //Arrange
@@ -56,7 +48,6 @@ public class PaymentTest
     [Fact]
     [Trait("Aggregate", "Add")]
     [Trait("Aggregate", "Fail")]
-
     public void Add_CustomerName_Missing_Fail()
     {
         //Arrange
@@ -74,7 +65,6 @@ public class PaymentTest
     [Fact]
     [Trait("Aggregate", "Update")]
     [Trait("Aggregate", "Success")]
-
     public void Update_Required_properties_filled_Success()
     {
         //Arrange
@@ -93,7 +83,6 @@ public class PaymentTest
     [Fact]
     [Trait("Aggregate", "Update")]
     [Trait("Aggregate", "Fail")]
-
     public void Update_CustomerName_Missing_Fail()
     {
         //Arrange
@@ -111,7 +100,6 @@ public class PaymentTest
     [Fact]
     [Trait("Aggregate", "Delete")]
     [Trait("Aggregate", "Success")]
-
     public void Delete_IDFilled_Success()
     {
         //Arrange

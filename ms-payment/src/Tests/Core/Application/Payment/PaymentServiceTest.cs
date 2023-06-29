@@ -15,7 +15,6 @@ public class PaymentServiceTest
         var applicationPayment = applicationPaymentMock.Object;
         return applicationPayment;
     }
-
     public IPaymentService SetupApplicationService()
     {
         var state = new Mock<IPaymentState>().Object;
@@ -25,7 +24,6 @@ public class PaymentServiceTest
     [Fact]
     [Trait("ApplicationService", "PaymentService")]
     [Trait("ApplicationService", "Success")]
-
     public void Add_CommandNotNull_Success()
     {
         //Arrange
@@ -48,7 +46,6 @@ public class PaymentServiceTest
     [Fact]
     [Trait("ApplicationService", "PaymentService")]
     [Trait("ApplicationService", "Success")]
-
     public void Update_CommandFilled_Success()
     {
         //Arrange
@@ -71,7 +68,6 @@ public class PaymentServiceTest
     [Fact]
     [Trait("ApplicationService", "PaymentService")]
     [Trait("ApplicationService", "Success")]
-
     public void Delete_CommandFilled_Success()
     {
         //Arrange
