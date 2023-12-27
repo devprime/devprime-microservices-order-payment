@@ -7,6 +7,7 @@ public class DeleteOrderEventHandler : EventHandler<DeleteOrder, IOrderState>
     public override dynamic Handle(DeleteOrder deleteOrder)
     {
         var order = deleteOrder.Get<Domain.Aggregates.Order.Order>();
-        return Dp.State.Order.Delete(order.ID);
+        var result = Dp.State.Order.Delete(order.ID);
+        return result;
     }
 }

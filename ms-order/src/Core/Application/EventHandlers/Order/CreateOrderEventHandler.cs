@@ -7,6 +7,7 @@ public class CreateOrderEventHandler : EventHandler<CreateOrder, IOrderState>
     public override dynamic Handle(CreateOrder createOrder)
     {
         var order = createOrder.Get<Domain.Aggregates.Order.Order>();
-        return Dp.State.Order.Add(order);
+        var result = Dp.State.Order.Add(order);
+        return result;
     }
 }

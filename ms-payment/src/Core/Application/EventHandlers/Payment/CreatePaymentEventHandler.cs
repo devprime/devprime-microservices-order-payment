@@ -7,6 +7,7 @@ public class CreatePaymentEventHandler : EventHandler<CreatePayment, IPaymentSta
     public override dynamic Handle(CreatePayment createPayment)
     {
         var payment = createPayment.Get<Domain.Aggregates.Payment.Payment>();
-        return Dp.State.Payment.Add(payment);
+        var result = Dp.State.Payment.Add(payment);
+        return result;
     }
 }

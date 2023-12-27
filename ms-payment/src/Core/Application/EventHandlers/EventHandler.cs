@@ -7,6 +7,7 @@ public class EventHandler : IEventHandler
         handler.Add<DeletePayment, DeletePaymentEventHandler>();
         handler.Add<PaymentCreated, PaymentCreatedEventHandler>();
         handler.Add<PaymentDeleted, PaymentDeletedEventHandler>();
+        handler.Add<PaymentGetByID, PaymentGetByIDEventHandler>();
         handler.Add<PaymentGet, PaymentGetEventHandler>();
         handler.Add<PaymentUpdated, PaymentUpdatedEventHandler>();
         handler.Add<UpdatePayment, UpdatePaymentEventHandler>();

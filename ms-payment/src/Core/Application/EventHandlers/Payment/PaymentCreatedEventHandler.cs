@@ -11,7 +11,12 @@ public class PaymentCreatedEventHandler : EventHandler<PaymentCreated, IPaymentS
         var destination = Dp.Settings.Default("stream.paymentevents");
         var eventName = "PaymentCreated";
         var eventData = new PaymentCreatedEventDTO()
-        {ID = payment.ID, CustomerName = payment.CustomerName, OrderID = payment.OrderID, Value = payment.Value};
+        {
+            ID = payment.ID,
+            CustomerName = payment.CustomerName,
+            OrderID = payment.OrderID,
+            Value = payment.Value
+        };
         Dp.Stream.Send(destination, eventName, eventData);
         success = true;
         return success;

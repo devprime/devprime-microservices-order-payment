@@ -1,24 +1,24 @@
 namespace Core.Tests;
 public class PaymentServiceTest
 {
-    public Application.Services.Payment.Model.Payment SetupCommand(Action add, Action update, Action delete)
+    public Application.Services.Payment.Model.Payment SetupCommand(Action add, Action update, Action delete, DpTest dpTest)
     {
         var domainPaymentMock = new Mock<Domain.Aggregates.Payment.Payment>();
         domainPaymentMock.Setup((o) => o.Add()).Callback(add);
         domainPaymentMock.Setup((o) => o.Update()).Callback(update);
         domainPaymentMock.Setup((o) => o.Delete()).Callback(delete);
         var payment = domainPaymentMock.Object;
-        DpTest.MockDpDomain(payment);
-        DpTest.Set<string>(payment, "CustomerName", Faker.Lorem.Sentence(1));
+        dpTest.MockDpDomain(payment);
+        dpTest.Set<string>(payment, "CustomerName", Faker.Lorem.Sentence(1));
         var applicationPaymentMock = new Mock<Application.Services.Payment.Model.Payment>();
         applicationPaymentMock.Setup((o) => o.ToDomain()).Returns(payment);
         var applicationPayment = applicationPaymentMock.Object;
         return applicationPayment;
     }
-    public IPaymentService SetupApplicationService()
+    public IPaymentService SetupApplicationService(DpTest dpTest)
     {
         var state = new Mock<IPaymentState>().Object;
-        var paymentService = new Application.Services.Payment.PaymentService(state, DpTest.MockDp());
+        var paymentService = new Application.Services.Payment.PaymentService(state, dpTest.MockDp());
         return paymentService;
     }
     [Fact]
@@ -27,6 +27,7 @@ public class PaymentServiceTest
     public void Add_CommandNotNull_Success()
     {
         //Arrange
+        var dpTest = new DpTest();
         var addCalled = false;
         var add = () =>
         {
@@ -36,8 +37,8 @@ public class PaymentServiceTest
         {
         }, () =>
         {
-        });
-        var paymentService = SetupApplicationService();
+        }, dpTest);
+        var paymentService = SetupApplicationService(dpTest);
         //Act
         paymentService.Add(command);
         //Assert
@@ -49,6 +50,7 @@ public class PaymentServiceTest
     public void Update_CommandFilled_Success()
     {
         //Arrange
+        var dpTest = new DpTest();
         var updateCalled = false;
         var update = () =>
         {
@@ -58,8 +60,8 @@ public class PaymentServiceTest
         {
         }, update, () =>
         {
-        });
-        var paymentService = SetupApplicationService();
+        }, dpTest);
+        var paymentService = SetupApplicationService(dpTest);
         //Act
         paymentService.Update(command);
         //Assert
@@ -70,7 +72,8 @@ public class PaymentServiceTest
     [Trait("ApplicationService", "Success")]
     public void Delete_CommandFilled_Success()
     {
-        //Arrange
+        //Arrange        
+        var dpTest = new DpTest();
         var deleteCalled = false;
         var delete = () =>
         {
@@ -80,8 +83,8 @@ public class PaymentServiceTest
         {
         }, () =>
         {
-        }, delete);
-        var paymentService = SetupApplicationService();
+        }, delete, dpTest);
+        var paymentService = SetupApplicationService(dpTest);
         //Act
         paymentService.Delete(command);
         //Assert

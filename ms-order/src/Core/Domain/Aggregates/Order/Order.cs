@@ -1,4 +1,4 @@
-﻿namespace Domain.Aggregates.Order;
+namespace Domain.Aggregates.Order;
 public class Order : AggRoot
 {
     public string CustomerName { get; private set; }
@@ -93,10 +93,17 @@ public class Order : AggRoot
                 if (!filterIsValid)
                     throw new PublicException($"Invalid filter '{filter}' is invalid try: 'ID', 'CustomerName', 'CustomerTaxID', 'Total',");
             }
-            var source = Dp.ProcessEvent(new OrderGet()
-            {Limit = limit, Offset = offset, Ordering = ordering, Sort = sort, Filter = filter});
+            var source = Dp.ProcessEvent(new OrderGet() { Limit = limit, Offset = offset, Ordering = ordering, Sort = sort, Filter = filter });
             return source;
         });
+    }
+    public virtual Order GetByID()
+    {
+        var result = Dp.Pipeline(ExecuteResult: () =>
+        {
+            return Dp.ProcessEvent<Order>(new OrderGetByID());
+        });
+        return result;
     }
     private void ValidFields()
     {

@@ -10,13 +10,18 @@ public class OrderDeletedEventHandlerTest
     private OrderDeletedEventDTO SetEventData(Domain.Aggregates.Order.Order order)
     {
         return new OrderDeletedEventDTO()
-        {ID = order.ID, CustomerName = order.CustomerName, CustomerTaxID = order.CustomerTaxID, Total = order.Total};
+        {
+            ID = order.ID,
+            CustomerName = order.CustomerName,
+            CustomerTaxID = order.CustomerTaxID,
+            Total = order.Total
+        };
     }
-    public OrderDeleted Create_Order_Object_OK()
+    public OrderDeleted Create_Order_Object_OK(DpTest dpTest)
     {
-        var order = OrderTest.Create_Order_Required_Properties_OK();
+        var order = OrderTest.Create_Order_Required_Properties_OK(dpTest);
         var orderDeleted = new OrderDeleted();
-        DpTest.SetDomainEventObject(orderDeleted, order);
+        dpTest.SetDomainEventObject(orderDeleted, order);
         return orderDeleted;
     }
     [Fact]
@@ -25,16 +30,17 @@ public class OrderDeletedEventHandlerTest
     public void Handle_OrderObjectFilled_Success()
     {
         //Arrange
+        var dpTest = new DpTest();
         var settings = CustomSettings();
-        var orderDeleted = Create_Order_Object_OK();
-        var order = DpTest.GetDomainEventObject<Domain.Aggregates.Order.Order>(orderDeleted);
-        var orderDeletedEventHandler = new Application.EventHandlers.Order.OrderDeletedEventHandler(null, DpTest.MockDp<IOrderState>(null));
-        DpTest.SetupSettings(orderDeletedEventHandler.Dp, settings);
-        DpTest.SetupStream(orderDeletedEventHandler.Dp);
+        var orderDeleted = Create_Order_Object_OK(dpTest);
+        var order = dpTest.GetDomainEventObject<Domain.Aggregates.Order.Order>(orderDeleted);
+        var orderDeletedEventHandler = new Application.EventHandlers.Order.OrderDeletedEventHandler(null, dpTest.MockDp<IOrderState>(null));
+        dpTest.SetupSettings(orderDeletedEventHandler.Dp, settings);
+        dpTest.SetupStream(orderDeletedEventHandler.Dp);
         //Act
         var result = orderDeletedEventHandler.Handle(orderDeleted);
         //Assert
-        var sentEvents = DpTest.GetSentEvents(orderDeletedEventHandler.Dp);
+        var sentEvents = dpTest.GetSentEvents(orderDeletedEventHandler.Dp);
         var orderDeletedEventDTO = SetEventData(order);
         Assert.Equal(sentEvents[0].Destination, settings["stream.orderevents"]);
         Assert.Equal("OrderDeleted", sentEvents[0].EventName);

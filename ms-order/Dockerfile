@@ -1,12 +1,11 @@
 # Step 1
-FROM mcr.microsoft.com/dotnet/aspnet:7.0.7-jammy AS base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0.0-jammy AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-
 # Step 2
-FROM mcr.microsoft.com/dotnet/sdk:7.0.304-jammy AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0.100-jammy AS build
 RUN echo "Starting copy..."
 WORKDIR /
 COPY [".", "devprime/"]

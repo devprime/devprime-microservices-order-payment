@@ -1,4 +1,4 @@
-﻿namespace Domain.Aggregates.Payment;
+namespace Domain.Aggregates.Payment;
 public class Payment : AggRoot
 {
     public string CustomerName { get; private set; }
@@ -78,10 +78,17 @@ public class Payment : AggRoot
                 if (!filterIsValid)
                     throw new PublicException($"Invalid filter '{filter}' is invalid try: 'ID', 'CustomerName', 'OrderID', 'Value',");
             }
-            var source = Dp.ProcessEvent(new PaymentGet()
-            {Limit = limit, Offset = offset, Ordering = ordering, Sort = sort, Filter = filter});
+            var source = Dp.ProcessEvent(new PaymentGet() { Limit = limit, Offset = offset, Ordering = ordering, Sort = sort, Filter = filter });
             return source;
         });
+    }
+    public virtual Payment GetByID()
+    {
+        var result = Dp.Pipeline(ExecuteResult: () =>
+        {
+            return Dp.ProcessEvent<Payment>(new PaymentGetByID());
+        });
+        return result;
     }
     private void ValidFields()
     {

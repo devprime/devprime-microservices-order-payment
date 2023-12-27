@@ -1,25 +1,25 @@
 namespace Core.Tests;
 public class OrderServiceTest
 {
-    public Application.Services.Order.Model.Order SetupCommand(Action add, Action update, Action delete)
+    public Application.Services.Order.Model.Order SetupCommand(Action add, Action update, Action delete, DpTest dpTest)
     {
         var domainOrderMock = new Mock<Domain.Aggregates.Order.Order>();
         domainOrderMock.Setup((o) => o.Add()).Callback(add);
         domainOrderMock.Setup((o) => o.Update()).Callback(update);
         domainOrderMock.Setup((o) => o.Delete()).Callback(delete);
         var order = domainOrderMock.Object;
-        DpTest.MockDpDomain(order);
-        DpTest.Set<string>(order, "CustomerName", Faker.Lorem.Sentence(1));
-        DpTest.Set<string>(order, "CustomerTaxID", Faker.Lorem.Sentence(1));
+        dpTest.MockDpDomain(order);
+        dpTest.Set<string>(order, "CustomerName", Faker.Lorem.Sentence(1));
+        dpTest.Set<string>(order, "CustomerTaxID", Faker.Lorem.Sentence(1));
         var applicationOrderMock = new Mock<Application.Services.Order.Model.Order>();
         applicationOrderMock.Setup((o) => o.ToDomain()).Returns(order);
         var applicationOrder = applicationOrderMock.Object;
         return applicationOrder;
     }
-    public IOrderService SetupApplicationService()
+    public IOrderService SetupApplicationService(DpTest dpTest)
     {
         var state = new Mock<IOrderState>().Object;
-        var orderService = new Application.Services.Order.OrderService(state, DpTest.MockDp());
+        var orderService = new Application.Services.Order.OrderService(state, dpTest.MockDp());
         return orderService;
     }
     [Fact]
@@ -28,6 +28,7 @@ public class OrderServiceTest
     public void Add_CommandNotNull_Success()
     {
         //Arrange
+        var dpTest = new DpTest();
         var addCalled = false;
         var add = () =>
         {
@@ -37,8 +38,8 @@ public class OrderServiceTest
         {
         }, () =>
         {
-        });
-        var orderService = SetupApplicationService();
+        }, dpTest);
+        var orderService = SetupApplicationService(dpTest);
         //Act
         orderService.Add(command);
         //Assert
@@ -50,6 +51,7 @@ public class OrderServiceTest
     public void Update_CommandFilled_Success()
     {
         //Arrange
+        var dpTest = new DpTest();
         var updateCalled = false;
         var update = () =>
         {
@@ -59,8 +61,8 @@ public class OrderServiceTest
         {
         }, update, () =>
         {
-        });
-        var orderService = SetupApplicationService();
+        }, dpTest);
+        var orderService = SetupApplicationService(dpTest);
         //Act
         orderService.Update(command);
         //Assert
@@ -71,7 +73,8 @@ public class OrderServiceTest
     [Trait("ApplicationService", "Success")]
     public void Delete_CommandFilled_Success()
     {
-        //Arrange
+        //Arrange        
+        var dpTest = new DpTest();
         var deleteCalled = false;
         var delete = () =>
         {
@@ -81,8 +84,8 @@ public class OrderServiceTest
         {
         }, () =>
         {
-        }, delete);
-        var orderService = SetupApplicationService();
+        }, delete, dpTest);
+        var orderService = SetupApplicationService(dpTest);
         //Act
         orderService.Delete(command);
         //Assert

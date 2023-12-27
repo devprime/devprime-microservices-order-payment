@@ -11,7 +11,12 @@ public class OrderUpdatedEventHandler : EventHandler<OrderUpdated, IOrderState>
         var destination = Dp.Settings.Default("stream.orderevents");
         var eventName = "OrderUpdated";
         var eventData = new OrderUpdatedEventDTO()
-        {ID = order.ID, CustomerName = order.CustomerName, CustomerTaxID = order.CustomerTaxID, Total = order.Total};
+        {
+            ID = order.ID,
+            CustomerName = order.CustomerName,
+            CustomerTaxID = order.CustomerTaxID,
+            Total = order.Total
+        };
         Dp.Stream.Send(destination, eventName, eventData);
         success = true;
         return success;

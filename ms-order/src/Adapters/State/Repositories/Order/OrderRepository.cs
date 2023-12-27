@@ -110,33 +110,52 @@ public class OrderRepository : RepositoryBase, IOrderRepository
         }
         return exp;
     }
-    private Expression<Func<Model.Order, bool>> GetFilter(string filter)
+    private FilterDefinition<Model.Order> GetFilter(string filter)
     {
-        Expression<Func<Model.Order, bool>> exp = p => true;
+        var builder = Builders<Model.Order>.Filter;
+        FilterDefinition<Model.Order> exp;
+        string CustomerName = string.Empty;
+        string CustomerTaxID = string.Empty;
+        Double? Total = null;
         if (!string.IsNullOrWhiteSpace(filter))
         {
-            var slice = filter?.Split("=");
-            if (slice.Length > 1)
+            var conditions = filter.Split(",");
+            if (conditions.Count() >= 1)
             {
-                var field = slice[0];
-                var value = slice[1];
-                if (string.IsNullOrWhiteSpace(value))
+                foreach (var condition in conditions)
                 {
-                    exp = p => true;
-                }
-                else
-                {
-                    if (field.ToLower() == "customername")
-                        exp = p => p.CustomerName.ToLower() == value.ToLower();
-                    else if (field.ToLower() == "customertaxid")
-                        exp = p => p.CustomerTaxID.ToLower() == value.ToLower();
-                    else if (field.ToLower() == "total")
-                        exp = p => p.Total == Convert.ToDouble(value);
-                    else
-                        exp = p => true;
+                    var slice = condition?.Split("=");
+                    if (slice.Length > 1)
+                    {
+                        var field = slice[0];
+                        var value = slice[1];
+                        if (field.ToLower() == "customername")
+                            CustomerName = value;
+                        else if (field.ToLower() == "customertaxid")
+                            CustomerTaxID = value;
+                        else if (field.ToLower() == "total")
+                            Total = Convert.ToDouble(value);
+                    }
                 }
             }
         }
+        var bfilter = builder.Empty;
+        if (!string.IsNullOrWhiteSpace(CustomerName))
+        {
+            var CustomerNameFilter = builder.Eq(x => x.CustomerName, CustomerName);
+            bfilter &= CustomerNameFilter;
+        }
+        if (!string.IsNullOrWhiteSpace(CustomerTaxID))
+        {
+            var CustomerTaxIDFilter = builder.Eq(x => x.CustomerTaxID, CustomerTaxID);
+            bfilter &= CustomerTaxIDFilter;
+        }
+        if (Total != null)
+        {
+            var TotalFilter = builder.Eq(x => x.Total, Total);
+            bfilter &= TotalFilter;
+        }
+        exp = bfilter;
         return exp;
     }
     public bool Exists(Guid orderID)
@@ -210,7 +229,9 @@ public class OrderRepository : RepositoryBase, IOrderRepository
     {
         if (order is null)
             return new Domain.Aggregates.Order.Order()
-            {IsNew = true};
+            {
+                IsNew = true
+            };
         Domain.Aggregates.Order.Order _order = new Domain.Aggregates.Order.Order(order.ID, order.CustomerName, order.CustomerTaxID, ToDomain(order.Items), order.Total);
         return _order;
     }
@@ -218,7 +239,9 @@ public class OrderRepository : RepositoryBase, IOrderRepository
     {
         if (item is null)
             return new Domain.Aggregates.Order.Item()
-            {IsNew = true};
+            {
+                IsNew = true
+            };
         Domain.Aggregates.Order.Item _item = new Domain.Aggregates.Order.Item(item.ID, item.Description, item.Amount, item.SKU, item.Price);
         return _item;
     }

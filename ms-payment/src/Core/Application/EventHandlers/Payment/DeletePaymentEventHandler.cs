@@ -7,6 +7,7 @@ public class DeletePaymentEventHandler : EventHandler<DeletePayment, IPaymentSta
     public override dynamic Handle(DeletePayment deletePayment)
     {
         var payment = deletePayment.Get<Domain.Aggregates.Payment.Payment>();
-        return Dp.State.Payment.Delete(payment.ID);
+        var result = Dp.State.Payment.Delete(payment.ID);
+        return result;
     }
 }

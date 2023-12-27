@@ -1,11 +1,11 @@
 namespace Core.Tests;
 public class DeletePaymentEventHandlerTest
 {
-    public DeletePayment Create_Payment_Object_OK()
+    public DeletePayment Create_Payment_Object_OK(DpTest dpTest)
     {
-        var payment = PaymentTest.Create_Payment_Required_Properties_OK();
+        var payment = PaymentTest.Create_Payment_Required_Properties_OK(dpTest);
         var deletePayment = new DeletePayment();
-        DpTest.SetDomainEventObject(deletePayment, payment);
+        dpTest.SetDomainEventObject(deletePayment, payment);
         return deletePayment;
     }
     [Fact]
@@ -14,9 +14,10 @@ public class DeletePaymentEventHandlerTest
     public void Handle_PaymentObjectFilled_Success()
     {
         //Arrange
+        var dpTest = new DpTest();
         object parameter = null;
-        var deletePayment = Create_Payment_Object_OK();
-        var payment = DpTest.GetDomainEventObject<Domain.Aggregates.Payment.Payment>(deletePayment);
+        var deletePayment = Create_Payment_Object_OK(dpTest);
+        var payment = dpTest.GetDomainEventObject<Domain.Aggregates.Payment.Payment>(deletePayment);
         var repositoryMock = new Mock<IPaymentRepository>();
         repositoryMock.Setup((o) => o.Delete(payment.ID)).Returns(true).Callback(() =>
         {
@@ -26,7 +27,7 @@ public class DeletePaymentEventHandlerTest
         var stateMock = new Mock<IPaymentState>();
         stateMock.SetupGet((o) => o.Payment).Returns(repository);
         var state = stateMock.Object;
-        var deletePaymentEventHandler = new Application.EventHandlers.Payment.DeletePaymentEventHandler(state, DpTest.MockDp<IPaymentState>(state));
+        var deletePaymentEventHandler = new Application.EventHandlers.Payment.DeletePaymentEventHandler(state, dpTest.MockDp<IPaymentState>(state));
         //Act
         var result = deletePaymentEventHandler.Handle(deletePayment);
         //Assert

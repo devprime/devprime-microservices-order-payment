@@ -10,13 +10,18 @@ public class PaymentCreatedEventHandlerTest
     private PaymentCreatedEventDTO SetEventData(Domain.Aggregates.Payment.Payment payment)
     {
         return new PaymentCreatedEventDTO()
-        {ID = payment.ID, CustomerName = payment.CustomerName, OrderID = payment.OrderID, Value = payment.Value};
+        {
+            ID = payment.ID,
+            CustomerName = payment.CustomerName,
+            OrderID = payment.OrderID,
+            Value = payment.Value
+        };
     }
-    public PaymentCreated Create_Payment_Object_OK()
+    public PaymentCreated Create_Payment_Object_OK(DpTest dpTest)
     {
-        var payment = PaymentTest.Create_Payment_Required_Properties_OK();
+        var payment = PaymentTest.Create_Payment_Required_Properties_OK(dpTest);
         var paymentCreated = new PaymentCreated();
-        DpTest.SetDomainEventObject(paymentCreated, payment);
+        dpTest.SetDomainEventObject(paymentCreated, payment);
         return paymentCreated;
     }
     [Fact]
@@ -25,16 +30,17 @@ public class PaymentCreatedEventHandlerTest
     public void Handle_PaymentObjectFilled_Success()
     {
         //Arrange
+        var dpTest = new DpTest();
         var settings = CustomSettings();
-        var paymentCreated = Create_Payment_Object_OK();
-        var payment = DpTest.GetDomainEventObject<Domain.Aggregates.Payment.Payment>(paymentCreated);
-        var paymentCreatedEventHandler = new Application.EventHandlers.Payment.PaymentCreatedEventHandler(null, DpTest.MockDp<IPaymentState>(null));
-        DpTest.SetupSettings(paymentCreatedEventHandler.Dp, settings);
-        DpTest.SetupStream(paymentCreatedEventHandler.Dp);
+        var paymentCreated = Create_Payment_Object_OK(dpTest);
+        var payment = dpTest.GetDomainEventObject<Domain.Aggregates.Payment.Payment>(paymentCreated);
+        var paymentCreatedEventHandler = new Application.EventHandlers.Payment.PaymentCreatedEventHandler(null, dpTest.MockDp<IPaymentState>(null));
+        dpTest.SetupSettings(paymentCreatedEventHandler.Dp, settings);
+        dpTest.SetupStream(paymentCreatedEventHandler.Dp);
         //Act
         var result = paymentCreatedEventHandler.Handle(paymentCreated);
         //Assert
-        var sentEvents = DpTest.GetSentEvents(paymentCreatedEventHandler.Dp);
+        var sentEvents = dpTest.GetSentEvents(paymentCreatedEventHandler.Dp);
         var paymentCreatedEventDTO = SetEventData(payment);
         Assert.Equal(sentEvents[0].Destination, settings["stream.paymentevents"]);
         Assert.Equal("PaymentCreated", sentEvents[0].EventName);

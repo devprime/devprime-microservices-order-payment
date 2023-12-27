@@ -1,32 +1,32 @@
 namespace Core.Tests;
 public class OrderTest
 {
-    public static Guid FixedID = new Guid("1a5358bf-fa65-48b3-8b04-97198926b2d7");
+    public static Guid FixedID = new Guid("571cb188-1fa6-4eb8-9967-ab7ba41a07b3");
 
 #region fixtures
-    public static Domain.Aggregates.Order.Order Create_Order_Required_Properties_OK()
+    public static Domain.Aggregates.Order.Order Create_Order_Required_Properties_OK(DpTest dpTest)
     {
         var order = new Domain.Aggregates.Order.Order();
-        DpTest.MockDpDomain(order);
-        DpTest.Set<Guid>(order, "ID", FixedID);
-        DpTest.Set<string>(order, "CustomerName", Faker.Lorem.Sentence(1));
-        DpTest.Set<string>(order, "CustomerTaxID", Faker.Lorem.Sentence(1));
+        dpTest.MockDpDomain(order);
+        dpTest.Set<Guid>(order, "ID", FixedID);
+        dpTest.Set<string>(order, "CustomerName", Faker.Lorem.Sentence(1));
+        dpTest.Set<string>(order, "CustomerTaxID", Faker.Lorem.Sentence(1));
         return order;
     }
-    public static Domain.Aggregates.Order.Order Create_Order_With_CustomerName_Required_Property_Missing()
+    public static Domain.Aggregates.Order.Order Create_Order_With_CustomerName_Required_Property_Missing(DpTest dpTest)
     {
         var order = new Domain.Aggregates.Order.Order();
-        DpTest.MockDpDomain(order);
-        DpTest.Set<Guid>(order, "ID", FixedID);
-        DpTest.Set<string>(order, "CustomerTaxID", Faker.Lorem.Sentence(1));
+        dpTest.MockDpDomain(order);
+        dpTest.Set<Guid>(order, "ID", FixedID);
+        dpTest.Set<string>(order, "CustomerTaxID", Faker.Lorem.Sentence(1));
         return order;
     }
-    public static Domain.Aggregates.Order.Order Create_Order_With_CustomerTaxID_Required_Property_Missing()
+    public static Domain.Aggregates.Order.Order Create_Order_With_CustomerTaxID_Required_Property_Missing(DpTest dpTest)
     {
         var order = new Domain.Aggregates.Order.Order();
-        DpTest.MockDpDomain(order);
-        DpTest.Set<Guid>(order, "ID", FixedID);
-        DpTest.Set<string>(order, "CustomerName", Faker.Lorem.Sentence(1));
+        dpTest.MockDpDomain(order);
+        dpTest.Set<Guid>(order, "ID", FixedID);
+        dpTest.Set<string>(order, "CustomerName", Faker.Lorem.Sentence(1));
         return order;
     }
 
@@ -39,13 +39,14 @@ public class OrderTest
     public void Add_Required_properties_filled_Success()
     {
         //Arrange
-        var order = Create_Order_Required_Properties_OK();
-        DpTest.MockDpProcessEvent<bool>(order, "CreateOrder", true);
-        DpTest.MockDpProcessEvent<bool>(order, "OrderCreated", true);
+        var dpTest = new DpTest();
+        var order = Create_Order_Required_Properties_OK(dpTest);
+        dpTest.MockDpProcessEvent<bool>(order, "CreateOrder", true);
+        dpTest.MockDpProcessEvent(order, "OrderCreated");
         //Act
         order.Add();
         //Assert
-        var domainevents = DpTest.GetDomainEvents(order);
+        var domainevents = dpTest.GetDomainEvents(order);
         Assert.True(domainevents[0] is CreateOrder);
         Assert.True(domainevents[1] is OrderCreated);
         Assert.NotEqual(order.ID, Guid.Empty);
@@ -58,7 +59,8 @@ public class OrderTest
     public void Add_CustomerName_Missing_Fail()
     {
         //Arrange
-        var order = Create_Order_With_CustomerName_Required_Property_Missing();
+        var dpTest = new DpTest();
+        var order = Create_Order_With_CustomerName_Required_Property_Missing(dpTest);
         //Act and Assert
         var ex = Assert.Throws<PublicException>(order.Add);
         Assert.Equal("Public exception", ex.ErrorMessage);
@@ -71,7 +73,8 @@ public class OrderTest
     public void Add_CustomerTaxID_Missing_Fail()
     {
         //Arrange
-        var order = Create_Order_With_CustomerTaxID_Required_Property_Missing();
+        var dpTest = new DpTest();
+        var order = Create_Order_With_CustomerTaxID_Required_Property_Missing(dpTest);
         //Act and Assert
         var ex = Assert.Throws<PublicException>(order.Add);
         Assert.Equal("Public exception", ex.ErrorMessage);
@@ -87,14 +90,15 @@ public class OrderTest
     [Trait("Aggregate", "Success")]
     public void Update_Required_properties_filled_Success()
     {
-        //Arrange
-        var order = Create_Order_Required_Properties_OK();
-        DpTest.MockDpProcessEvent<bool>(order, "UpdateOrder", true);
-        DpTest.MockDpProcessEvent<bool>(order, "OrderUpdated", true);
+        //Arrange        
+        var dpTest = new DpTest();
+        var order = Create_Order_Required_Properties_OK(dpTest);
+        dpTest.MockDpProcessEvent<bool>(order, "UpdateOrder", true);
+        dpTest.MockDpProcessEvent(order, "OrderUpdated");
         //Act
         order.Update();
         //Assert
-        var domainevents = DpTest.GetDomainEvents(order);
+        var domainevents = dpTest.GetDomainEvents(order);
         Assert.True(domainevents[0] is UpdateOrder);
         Assert.True(domainevents[1] is OrderUpdated);
         Assert.NotEqual(order.ID, Guid.Empty);
@@ -106,7 +110,8 @@ public class OrderTest
     public void Update_CustomerName_Missing_Fail()
     {
         //Arrange
-        var order = Create_Order_With_CustomerName_Required_Property_Missing();
+        var dpTest = new DpTest();
+        var order = Create_Order_With_CustomerName_Required_Property_Missing(dpTest);
         //Act and Assert
         var ex = Assert.Throws<PublicException>(order.Update);
         Assert.Equal("Public exception", ex.ErrorMessage);
@@ -119,7 +124,8 @@ public class OrderTest
     public void Update_CustomerTaxID_Missing_Fail()
     {
         //Arrange
-        var order = Create_Order_With_CustomerTaxID_Required_Property_Missing();
+        var dpTest = new DpTest();
+        var order = Create_Order_With_CustomerTaxID_Required_Property_Missing(dpTest);
         //Act and Assert
         var ex = Assert.Throws<PublicException>(order.Update);
         Assert.Equal("Public exception", ex.ErrorMessage);
@@ -136,12 +142,14 @@ public class OrderTest
     public void Delete_IDFilled_Success()
     {
         //Arrange
-        var order = Create_Order_Required_Properties_OK();
-        DpTest.MockDpProcessEvent<bool>(order, "DeleteOrder", true);
+        var dpTest = new DpTest();
+        var order = Create_Order_Required_Properties_OK(dpTest);
+        dpTest.MockDpProcessEvent<bool>(order, "DeleteOrder", true);
+        dpTest.MockDpProcessEvent(order, "OrderDeleted");
         //Act
         order.Delete();
         //Assert
-        var domainevents = DpTest.GetDomainEvents(order);
+        var domainevents = dpTest.GetDomainEvents(order);
         Assert.True(domainevents[0] is DeleteOrder);
         Assert.True(domainevents[1] is OrderDeleted);
     }

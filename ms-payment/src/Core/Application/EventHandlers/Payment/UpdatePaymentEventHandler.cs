@@ -7,6 +7,7 @@ public class UpdatePaymentEventHandler : EventHandler<UpdatePayment, IPaymentSta
     public override dynamic Handle(UpdatePayment updatePayment)
     {
         var payment = updatePayment.Get<Domain.Aggregates.Payment.Payment>();
-        return Dp.State.Payment.Update(payment);
+        var result = Dp.State.Payment.Update(payment);
+        return result;
     }
 }

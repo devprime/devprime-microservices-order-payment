@@ -46,8 +46,11 @@ public class PaymentService : ApplicationService<IPaymentState>, IPaymentService
     {
         return Dp.Pipeline(ExecuteResult: () =>
         {
-            var payment = query.ToPayment(Dp.State.Payment.Get(query.ID));
-            return payment;
+            var payment = query.ToDomain();
+            Dp.Attach(payment);
+            payment = payment.GetByID();
+            var result = query.ToPayment(payment);
+            return result;
         });
     }
 }

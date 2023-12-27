@@ -110,33 +110,52 @@ public class PaymentRepository : RepositoryBase, IPaymentRepository
         }
         return exp;
     }
-    private Expression<Func<Model.Payment, bool>> GetFilter(string filter)
+    private FilterDefinition<Model.Payment> GetFilter(string filter)
     {
-        Expression<Func<Model.Payment, bool>> exp = p => true;
+        var builder = Builders<Model.Payment>.Filter;
+        FilterDefinition<Model.Payment> exp;
+        string CustomerName = string.Empty;
+        Guid? OrderID = null;
+        Double? Value = null;
         if (!string.IsNullOrWhiteSpace(filter))
         {
-            var slice = filter?.Split("=");
-            if (slice.Length > 1)
+            var conditions = filter.Split(",");
+            if (conditions.Count() >= 1)
             {
-                var field = slice[0];
-                var value = slice[1];
-                if (string.IsNullOrWhiteSpace(value))
+                foreach (var condition in conditions)
                 {
-                    exp = p => true;
-                }
-                else
-                {
-                    if (field.ToLower() == "customername")
-                        exp = p => p.CustomerName.ToLower() == value.ToLower();
-                    else if (field.ToLower() == "orderid")
-                        exp = p => p.OrderID == new Guid(value);
-                    else if (field.ToLower() == "value")
-                        exp = p => p.Value == Convert.ToDouble(value);
-                    else
-                        exp = p => true;
+                    var slice = condition?.Split("=");
+                    if (slice.Length > 1)
+                    {
+                        var field = slice[0];
+                        var value = slice[1];
+                        if (field.ToLower() == "customername")
+                            CustomerName = value;
+                        else if (field.ToLower() == "orderid")
+                            OrderID = new Guid(value);
+                        else if (field.ToLower() == "value")
+                            Value = Convert.ToDouble(value);
+                    }
                 }
             }
         }
+        var bfilter = builder.Empty;
+        if (!string.IsNullOrWhiteSpace(CustomerName))
+        {
+            var CustomerNameFilter = builder.Eq(x => x.CustomerName, CustomerName);
+            bfilter &= CustomerNameFilter;
+        }
+        if (OrderID != null)
+        {
+            var OrderIDFilter = builder.Eq(x => x.OrderID, OrderID);
+            bfilter &= OrderIDFilter;
+        }
+        if (Value != null)
+        {
+            var ValueFilter = builder.Eq(x => x.Value, Value);
+            bfilter &= ValueFilter;
+        }
+        exp = bfilter;
         return exp;
     }
     public bool Exists(Guid paymentID)
@@ -179,7 +198,9 @@ public class PaymentRepository : RepositoryBase, IPaymentRepository
     {
         if (payment is null)
             return new Domain.Aggregates.Payment.Payment()
-            {IsNew = true};
+            {
+                IsNew = true
+            };
         Domain.Aggregates.Payment.Payment _payment = new Domain.Aggregates.Payment.Payment(payment.ID, payment.CustomerName, payment.OrderID, payment.Value);
         return _payment;
     }

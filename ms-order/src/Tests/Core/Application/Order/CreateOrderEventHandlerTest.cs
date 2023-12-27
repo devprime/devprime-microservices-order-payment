@@ -1,11 +1,11 @@
 namespace Core.Tests;
 public class CreateOrderEventHandlerTest
 {
-    public CreateOrder Create_Order_Object_OK()
+    public CreateOrder Create_Order_Object_OK(DpTest dpTest)
     {
-        var order = OrderTest.Create_Order_Required_Properties_OK();
+        var order = OrderTest.Create_Order_Required_Properties_OK(dpTest);
         var createOrder = new CreateOrder();
-        DpTest.SetDomainEventObject(createOrder, order);
+        dpTest.SetDomainEventObject(createOrder, order);
         return createOrder;
     }
     [Fact]
@@ -14,9 +14,10 @@ public class CreateOrderEventHandlerTest
     public void Handle_OrderObjectFilled_Success()
     {
         //Arrange
+        var dpTest = new DpTest();
         object parameter = null;
-        var createOrder = Create_Order_Object_OK();
-        var order = DpTest.GetDomainEventObject<Domain.Aggregates.Order.Order>(createOrder);
+        var createOrder = Create_Order_Object_OK(dpTest);
+        var order = dpTest.GetDomainEventObject<Domain.Aggregates.Order.Order>(createOrder);
         var repositoryMock = new Mock<IOrderRepository>();
         repositoryMock.Setup((o) => o.Add(order)).Returns(true).Callback(() =>
         {
@@ -26,7 +27,7 @@ public class CreateOrderEventHandlerTest
         var stateMock = new Mock<IOrderState>();
         stateMock.SetupGet((o) => o.Order).Returns(repository);
         var state = stateMock.Object;
-        var createOrderEventHandler = new Application.EventHandlers.Order.CreateOrderEventHandler(state, DpTest.MockDp<IOrderState>(state));
+        var createOrderEventHandler = new Application.EventHandlers.Order.CreateOrderEventHandler(state, dpTest.MockDp<IOrderState>(state));
         //Act
         var result = createOrderEventHandler.Handle(createOrder);
         //Assert

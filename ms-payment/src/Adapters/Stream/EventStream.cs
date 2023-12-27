@@ -1,9 +1,10 @@
-namespace DevPrime.Stream;
+﻿namespace DevPrime.Stream;
 public class EventStream : EventStreamBase, IEventStream
 {
     public override void StreamEvents()
     {
-        Subscribe<IPaymentService, OrderCreatedEventDTO>("Stream1", "OrderCreated", (dto, paymentService, Dp) =>
+        Subscribe<IPaymentService, OrderCreatedEventDTO>("Stream1",
+        "OrderCreated", (dto, paymentService, Dp) =>
         {
             var command = new Payment()
             {

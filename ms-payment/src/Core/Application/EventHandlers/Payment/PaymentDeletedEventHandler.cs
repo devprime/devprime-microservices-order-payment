@@ -11,7 +11,12 @@ public class PaymentDeletedEventHandler : EventHandler<PaymentDeleted, IPaymentS
         var destination = Dp.Settings.Default("stream.paymentevents");
         var eventName = "PaymentDeleted";
         var eventData = new PaymentDeletedEventDTO()
-        {ID = payment.ID, CustomerName = payment.CustomerName, OrderID = payment.OrderID, Value = payment.Value};
+        {
+            ID = payment.ID,
+            CustomerName = payment.CustomerName,
+            OrderID = payment.OrderID,
+            Value = payment.Value
+        };
         Dp.Stream.Send(destination, eventName, eventData);
         success = true;
         return success;

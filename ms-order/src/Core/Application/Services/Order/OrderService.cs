@@ -46,8 +46,11 @@ public class OrderService : ApplicationService<IOrderState>, IOrderService
     {
         return Dp.Pipeline(ExecuteResult: () =>
         {
-            var order = query.ToOrder(Dp.State.Order.Get(query.ID));
-            return order;
+            var order = query.ToDomain();
+            Dp.Attach(order);
+            order = order.GetByID();
+            var result = query.ToOrder(order);
+            return result;
         });
     }
 }
